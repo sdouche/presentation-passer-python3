@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="remark,remarkjs,markdown,slideshow,presentation" />
+    <meta name="description" content="A simple, in-browser, markdown-driven slideshow tool." />
+    <title>Formation Python</title>
+    <link rel="stylesheet" type="text/css" href="theme.css">
+  </head>
+  <body>
+    <textarea id="source">
+
+name: inverse
+layout: true
+class: center, middle, inverse
+
+---
+# Pourquoi passer à Python 3 ?
+## Sébastien Douche / @sdouche
+
+### https://github.com/sdouche/presentation-passer-python3
+
+---
+layout: false
+
+.left-column[
+  ## Qui suis je ?
+]
+.right-column[
+  40 ans. Français. J'aime comprendre et résoudre des problèmes.
+
+- Geek depuis 1984
+
+- Fan de Logiciels Libres depuis 1995
+
+- Développeur (Python, Go, Rust)
+
+- Sysadmin (Linux / BSD)
+
+- Ex-responsable technique chez un éditeur logiciel français (2007-2014)
+
+- Intéressé par le Lifehacking
+
+- Adore les jeux de sociétés modernes
+
+- Motard (Honda CBR RR)
+
+- Aime l'humour noir, le second degré et les blagues pourries
+]
+
+---
+template: inverse
+
+# Objectif de cette présentation
+
+---
+class: center, middle
+
+## Présenter les avantages de Python 3
+
+---
+## Rappel des sorties
+
+|  Version   |      | Date       |
+|------------|------|------------|
+| Python 3.0 | :    | 2008-12-3  |
+| Python 3.1 | :    | 2009-06-26 |
+| Python 3.2 | :    | 2011-02-20 |
+| Python 3.3 | :    | 2012-09-29 |
+| Python 3.4 | :    | 2014-03-17 |
+
+Cette présentation se limite aux changements importants (à mes yeux), ces 5 versions apportent beaucoup plus !
+
+---
+## Rappel des sorties
+
+Coordination entre les 2 branches :
+
+- Python 2.6 avec Python 3.0
+- Python 2.7 avec Python 3.1 / 3.2
+
+---
+template: inverse
+
+# Interne
+
+---
+## ABI stable (Py 3.2)
+
+Définie une "stable set of API functions"
+- Garantie sur les futures versions de Python 3
+- Compatibilité binaire entre les versions de Python
+
+.footnote[[PEP 384 - Defining a Stable ABI](https://www.python.org/dev/peps/pep-0384/)]
+
+---
+## Un seul build (Py 3.3)
+
+Plus de narrow / wide build
+
+.footnote[[PEP 393 - Flexible String Representation](https://www.python.org/dev/peps/pep-0393/)]
+
+---
+## Répertoire pycache (Py 3.2)
+
+Le répertoire `__pycache__` contient les fichiers `.pyc` et `.pyo`. Cela évite aux interpréteurs de se «marcher sur les pieds».
+
+.footnote[[PEP 3147 - PYC Repository Directories](https://www.python.org/dev/peps/pep-3147/)]
+
+---
+## Espace de nom virtuel (Py 3.3)
+
+- Un répertoire sans fichier `__init.py__`
+- Créé à la volée la variable `__path__`
+
+.footnote[[PEP 402 - Simplified Package Layout and Partitioning](https://www.python.org/dev/peps/pep-0402/)]
+
+---
+## venv (Py 3.3)
+
+«Intégration» de virtualenv pour créer un environnement isolé.
+
+```bash
+$ python3 -m venv /path/to/venv
+$ pyvenv /path/to/venv
+```
+
+C'est :
+
+- une copie (ou lien synbolique) du binaire Python
+- un fichier `pyvenv.cfg`
+- un répertoire `site-packages`
+
+---
+## Ré-écriture de la GIL (Py 3.2)
+
+La nouvelle GIL est «moins mauvaise»
+
+.footnote[[Présentation de David Beazley](http://www.dabeaz.com/python/NewGIL.pdf)]
+
+---
+template: inverse
+
+# Programmation
+
+---
+## Unicode par défaut (Py 3.0)
+
+UTF-8 est l'encodage par défaut du code source
+
+---
+## string vs byte (Py 3.0)
+
+Distinction claire entre chaine de caractère (type str) et binaire (type byte).
+
+Il n'est pas possible de les mélanger comme en Python 2 :
+
+```python
+>>> string = "hello"
+>>> bytes = b"world!"
+>>> string + bytes
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: Can't convert 'bytes' object to str implicitly
+>>>
+```
+
+---
+## Argument par mot-clé (Py 3.0)
+
+Permet de rajouter des arguments avec mot-clés aprés un varargs.
+
+```
+def my_api(*, different=None):
+pass
+```
+
+Intéressant par exemple pour étendre une API existante.
+
+.footnote[[PEP 3102 - Keyword-Only Arguments](https://www.python.org/dev/peps/pep-3102/)]
+
+---
+## Annotation de fonction (Py 3.0)
+
+Permet d'annoter une fonction (paramètre et valeur de retour). Non utilisé pour l'instant dans la librairie standard.
+
+```python
+def foo(a: 'x', b: 5 + 6, c: list) -> max(2, 9):
+    pass
+```
+Utilité des annotations :
+
+- documentation
+- vérification par l'IDE / librairie
+- type checking ([PEP 484](https://www.python.org/dev/peps/pep-0484/))
+
+.footnote[[PEP 3107 - Function Annotations](https://www.python.org/dev/peps/pep-3107/)]
+
+---
+## Signature de fonction (Py 3.3)
+
+Améliore sensiblement la compréhension des objets en fournissant une représentation plus compléte :
+
+- nom
+- annotation
+- valeur par défaut
+- argument
+
+.footnote[[PEP 362 - Function Signature Object](https://www.python.org/dev/peps/pep-0362/)]
+
+---
+## nonlocal (Py 3.0)
+
+Ajoute un scope entre le scope local (assignement) et le scope global (module).
+
+.footnote[[PEP 3104 - Access to Names in Outer Scopes](https://www.python.org/dev/peps/pep-3104/)]
+
+---
+## Nom qualifié (Py 3.3)
+
+Permet d'améliorer l'introspection des «nested classes».
+
+```python
+>>> class C:
+...    def f(): pass
+...
+>>> C.f.__name__
+'f'
+>>> C.f.__qualname__
+'C.f'
+```
+
+.footnote[[PEP 3155 - Qualified name for classes and functions](https://www.python.org/dev/peps/pep-3155/)
+
+---
+## yield from (Py 3.3)
+
+Permet de déléguer le travail d'un générateur à un autre générateur .
+
+```python
+>>> def g(x):
+...     yield from range(x, 0, -1)
+...     yield from range(x)
+...
+>>> list(g(5))
+[5, 4, 3, 2, 1, 0, 1, 2, 3, 4]
+```
+
+.footnote[[PEP 380 - Syntax for Delegating to a Subgenerator](https://www.python.org/dev/peps/pep-0380/)]
+
+---
+## Extended iterable unpacking (Py 3.0)
+
+Un exemple simple :
+
+```python
+>>> a, *b, c = range(5)
+>>> a
+0
+>>> c
+4
+>>> b
+[1, 2, 3]
+```
+
+.footnote[[PEP 3132 - Extended Iterable Unpacking](https://www.python.org/dev/peps/pep-3132/)]
+
+---
+## Chainage des exceptions (Py 3.0)
+
+En Python 2.7, c'est la dernière exception qui est prise en compte :
+
+```python
+  def compute(a, b):
+            try:
+                a/b
+            except Exception, exc:
+                log(exc)
+
+        def log(exc):
+            file = open('logfile.txt')  # exception raised
+            print >>file, exc
+            file.close()
+```
+
+---
+## Chainage des exceptions (Py 3.0)
+
+On peut maintenant chainer les exceptions :
+
+```python
+>>> try:
+    ...
+        raise Exception
+... except Exception:
+    ...
+        raise NotImplementedError # __context__ set
+...
+Traceback (most recent call last):
+File "<stdin>", line 2, in <module>
+Exception
+During handling of the above exception, another exception occurred:
+Traceback (most recent call last):
+File "<stdin>", line 4, in <module>
+NotImplementedError
+```
+
+.footnote[[PEP 3134 - Exception Chaining and Embedded Tracebacks](https://www.python.org/dev/peps/pep-3134/)]
+
+---
+## Ajout du traceback (Py 3.0)
+
+L'attribut `__traceback__` contient toutes les informations sur le traceback :
+
+```python
+>>> import traceback
+>>> try:
+        ...
+        raise Exception
+... except Exception as exc:
+...
+traceback.print_tb(exc.__traceback__)
+...
+File "<stdin>", line 2, in <module>
+```
+
+.footnote[[PEP 3134 - Exception Chaining and Embedded Tracebacks](https://www.python.org/dev/peps/pep-3134/)]
+
+---
+## Exceptions OS et I/O retravaillées (Py 3.3)
+
+Plus de IOError ou OSError, tous est OSError.
+
+De nouvelles exceptions font leur apparition :
+
+- BlockingIOError
+- ChildProcessError
+- ConnectionError
+- FileExistsError
+- FileNotFoundError
+- InterruptedError
+- IsADirectoryError
+- NotADirectoryError
+- PermissionError
+- ProcessLookupError
+- TimeoutError
+- BrokenPipeError
+- ConnectionAbortedError
+- ConnectionRefusedError
+- ConnectionResetError
+
+.footnote[[PEP 3151 - Reworking the OS and IO exception hierarchy](https://www.python.org/dev/peps/pep-3151/)]
+
+---
+## Exceptions OS et I/O retravaillées (Py 3.3)
+
+On peut affiner la gestion des erreurs :
+
+```python
+try:
+    with open("document.txt") as f:
+        content = f.read()
+except FileNotFoundError:
+    print("document.txt file is missing")
+except PermissionError:
+    print("You are not allowed to read document.txt")
+```
+
+---
+## nouveau super()
+
+On peut invoquer `super()` sans argument pour appeller la bonne classe.
+
+.footnote[[PEP 3135 - New Super](https://www.python.org/dev/peps/pep-3135/)]
+
+---
+template: inverse
+
+# Nouveaux modules
+
+---
+## Module lzma (Py 3.3)
+
+Ce module fournit la compression / décompression LZMA (.xz).
+
+.footnote[[Documentation](https://docs.python.org/3.4/library/lzma.html)]
+
+---
+## Module ipaddress (Py 3.3)
+
+Ce module fournit la manipulation d'adresse IPv4 et IPv6 et de réseaux.
+
+.footnote[[Documentation](https://docs.python.org/3.4/library/ipaddress.html)]
+
+---
+## Module concurrent.futures (Py 3.2)
+
+Module proche de multiprocessing mais avec une API asynchrone.
+
+.footnote[[Documentation](https://docs.python.org/3.4/library/concurrent.futures.html)]
+
+---
+## Module pathlib (Py 3.4)
+
+Module qui fournit la gestion des chemins de fichier.
+
+```python
+>>> p = Path('/etc')
+>>> q = p / 'init.d' / 'reboot'
+>>> q
+PosixPath('/etc/init.d/reboot')
+>>> q.resolve()
+PosixPath('/etc/rc.d/init.d/halt')
+```
+
+.footnote[[Documentation](https://docs.python.org/3.4/library/pathlib.html)]
+
+---
+## Module selectors (Py 3.4)
+
+Module qui fournit une API de haut-niveau pour le multiplexing I/O.
+
+.footnote[[Documentation](https://docs.python.org/3.4/library/selectors.html)]
+
+---
+## Module statistics (Py 3.4)
+
+Module qui fournit des fonctions de statistiques mathématique.
+
+.footnote[[Documentation](https://docs.python.org/3.4/library/statistics.html)]
+
+---
+## Module tracemalloc (Py 3.4)
+
+Module qui implémente les PEPs [445](https://www.python.org/dev/peps/pep-0445/) et [454](https://www.python.org/dev/peps/pep-0454/) et qui permet de :
+
+- faire des statistiques d'allocation mémoire par fichier et par ligne.
+- calculer la différence entre 2 snapshots.
+- d'avoir le traceback d'un bloc mémoire
+
+
+.footnote[[Documentation](https://docs.python.org/3.4/library/tracemalloc.html)]
+
+---
+## Module tracemalloc (Py 3.4)
+
+Voila un exemple simple :
+
+```
+<frozen importlib._bootstrap>:716: size=8173 KiB (+4428 KiB), count=71332 (+39369), average=117 B
+/usr/lib/python3.4/linecache.py:127: size=940 KiB (+940 KiB), count=8106 (+8106), average=119 B
+/usr/lib/python3.4/unittest/case.py:571: size=298 KiB (+298 KiB), count=589 (+589), average=519 B
+<frozen importlib._bootstrap>:284: size=1005 KiB (+166 KiB), count=7423 (+1526), average=139 B
+/usr/lib/python3.4/mimetypes.py:217: size=112 KiB (+112 KiB), count=1334 (+1334), average=86 B
+/usr/lib/python3.4/http/server.py:848: size=96.0 KiB (+96.0 KiB), count=1 (+1), average=96.0 KiB
+/usr/lib/python3.4/inspect.py:1465: size=83.5 KiB (+83.5 KiB), count=109 (+109), average=784 B
+/usr/lib/python3.4/unittest/mock.py:491: size=77.7 KiB (+77.7 KiB), count=143 (+143), average=557 B
+/usr/lib/python3.4/urllib/parse.py:476: size=71.8 KiB (+71.8 KiB), count=969 (+969), average=76 B
+/usr/lib/python3.4/contextlib.py:38: size=67.2 KiB (+67.2 KiB), count=126 (+126), average=546 B
+```
+
+Exemple : écrire un code qui lance un *thread* pour faire un *snapshot* toutes les 2 minutes.
+
+---
+## Module tracemalloc (Py 3.4)
+
+Il existe un outil graphique pour manipuler les données produites :
+
+![Default-aligned image](img/tracemallocqt.png)
+
+---
+## Module asyncio (Py 3.4)
+
+Module qui fournit une infrastructure pour écrire du code uni-thread à base de coroutines ([PEP 3156](https://www.python.org/dev/peps/pep-3156/) et [PEP 3153](https://www.python.org/dev/peps/pep-3153/)) :
+
+- une boucle d'évenement
+- abstraction des protocoles et du transport
+- support de TCP, UDP et SSL
+- une classe Future
+- notion de coroutine et de tache (yield from)
+- synchronisation entre coroutines
+
+Le site [asyncio.org](http://asyncio.org/) recense les librairies compatibles.
+
+.footnote[[Documentation](https://docs.python.org/3.4/library/asyncio.html)]
+
+---
+## Module enum (Py 3.4)
+
+Module qui fournit le type enum :
+
+```python
+>>> from enum import Enum
+>>> class Color(Enum):
+...     red = 1
+...     green = 2
+...     blue = 3
+...
+
+>>> print(repr(Color.red))
+<Color.red: 1>
+```
+
+.footnote[[Documentation](https://docs.python.org/3.4/library/enum.html)]
+
+---
+template: inverse
+
+# Portage pas-à-pas vers Python 3
+
+---
+## Étapes vers Python 3
+
+Décomposition schématique, on peut mélanger les étapes.
+
+---
+## Étape 1 : Passer à Python 2.7
+
+Coordination entre les 2 branches :
+
+- Python 2.6 avec Python 3.0
+- Python 2.7 avec Python 3.1 / 3.2
+
+**Rappel** : Python 2.7 est la seule version maintenue dans la branche 2.x.
+
+---
+## Étape 2 : Porter votre code sur Python 2.7
+
+Python 2.7 incorpore des évolutions issues de Python 3.x :
+
+- «new-style classes»
+- str.format()
+- except Exception as exc: ...
+- types int / long unifiés ([PEP 237](https://www.python.org/dev/peps/pep-0237/))
+- memoryview
+- ...
+
+Utilisez les `__future__` :
+
+- import absolu
+- littéral Unicode
+- division ([PEP 238](https://www.python.org/dev/peps/pep-0238/))
+- fonction print
+
+---
+## Étape 3 : Nettoyez son code Python 2
+
+- Passer toutes les chaines de caractères en Unicode (UTF-8)
+- Différencier les chaines de caractères (type `unicode`) des octets (type `str`)
+
+---
+## Étape 4 : utiliser les backports de packages Python 3
+
+Quelques exemples :
+
+- pathlib
+- ipaddr
+- futures
+- configparser
+- contextlib2
+- enum34
+- ...
+
+---
+## Étape 5 : utiliser une librairie Py2 / Py3
+
+Une librairie Py2 / Py3 permet d'avoir une seule base de code :
+
+- https://pythonhosted.org/six/
+- https://github.com/mitsuhiko/python-modernize
+- http://python-future.org/index.html
+
+---
+## Étape 6 : vérifier vos dépendances
+
+Vérifiez si des dépendances ne supportent pas Python 3.
+
+[Projet Can't Use Python 3](https://pypi.python.org/pypi/caniusepython3)
+
+---
+name: last-page
+template: inverse
+
+## That's all folks!
+
+    </textarea>
+    <script src="remark-0.10.2.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      var hljs = remark.highlighter.engine;
+    </script>
+    <script src="remark.language.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      var slideshow = remark.create({
+          highlightStyle: 'sunburst',
+          highlightLanguage: 'remark'
+        }) ;
+    </script>
+  </body>
+</html>
